@@ -1,9 +1,11 @@
-# CRM AI-Calling Agent: Cybersecurity Consultation System
+# Multi-Vertical CRM AI-Calling Agent
 
 ## 🚀 Overview
-**CRM AI-Calling Agent** is a sophisticated, end-to-end automated calling and CRM integration system. It leverages state-of-the-art AI technologies to conduct outbound cybersecurity consultation calls, evaluate client needs, and provide automated follow-ups via SMS and structured reports.
+**Multi-Vertical CRM AI-Calling Agent** is a sophisticated, end-to-end automated calling and CRM integration system. It leverages state-of-the-art AI technologies to conduct outbound calls, evaluate client needs, and provide automated follow-ups via SMS and structured reports for **any industry**.
 
-By integrating **Vapi** for conversational voice AI, **Twilio** for telephony and messaging, and **Groq** for high-speed LLM processing, this platform streamlines the lead-to-consultation funnel with zero manual intervention.
+The system is designed as a **Vertical Agent**—simply update the prompt in the **Vapi Dashboard**, and the agent will adapt its conversation style, technical knowledge, and objectives to suit your specific business needs (e.g., Real Estate, Healthcare, SaaS, or Consulting).
+
+By integrating **Vapi** for conversational voice AI, **Twilio** for telephony and messaging, and **Groq** for high-speed LLM processing, this platform streamlines the lead-to-conversion funnel with zero manual intervention.
 
 ---
 
@@ -35,7 +37,7 @@ graph TD
 
 ## 🔄 Automated Workflow
 
-The following diagram illustrates the lifecycle of a client consultation:
+The following diagram illustrates the lifecycle of a client interaction:
 
 ```mermaid
 sequenceDiagram
@@ -71,7 +73,7 @@ The project requires several environment variables to establish connections with
 | Variable | Description | Source |
 | :--- | :--- | :--- |
 | `VAPI_API_KEY` | Your Vapi platform private key. | [vapi.ai](https://vapi.ai) |
-| `VAPI_ASSISTANT_ID` | The ID of your pre-configured cybersecurity assistant. | Vapi Dashboard |
+| `VAPI_ASSISTANT_ID` | The ID of your pre-configured Vapi assistant. | Vapi Dashboard |
 | `TWILIO_ACCOUNT_SID` | Your Twilio Account unique identifier. | [twilio.com](https://twilio.com) |
 | `TWILIO_AUTH_TOKEN` | Your Twilio authentication token. | Twilio Console |
 | `TWILIO_FROM_NUMBER` | The Twilio phone number used for calls and SMS. | Twilio Console |
@@ -109,10 +111,10 @@ The project requires several environment variables to establish connections with
 ## 📊 CRM Integration & Excel Output
 
 The system generates a dynamic `client_response.xlsx` containing:
-- **Timestamp**: Exact time of the consultation.
+- **Timestamp**: Exact time of the interaction.
 - **Transcript**: Word-for-word record of the AI conversation.
-- **Summary**: AI-generated overview of client security concerns.
-- **Checklist**: 3-point priority action plan for the client.
+- **Summary**: AI-generated overview of client needs or feedback.
+- **Checklist**: 3-point priority action plan based on the call.
 - **Call Report**: Detailed recording link and status.
 - **SMS Status**: Confirmation of follow-up delivery.
 
