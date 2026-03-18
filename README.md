@@ -1,7 +1,7 @@
-# CRM AI-Calling Agent: Anvriksh Cybersecurity Consultation
+# CRM AI-Calling Agent: Cybersecurity Consultation System
 
 ## 🚀 Overview
-**CRM AI-Calling Agent** is a sophisticated, end-to-end automated calling and CRM integration system designed for **Anvriksh**. It leverages state-of-the-art AI technologies to conduct outbound cybersecurity consultation calls, evaluate client needs, and provide automated follow-ups via SMS and structured reports.
+**CRM AI-Calling Agent** is a sophisticated, end-to-end automated calling and CRM integration system. It leverages state-of-the-art AI technologies to conduct outbound cybersecurity consultation calls, evaluate client needs, and provide automated follow-ups via SMS and structured reports.
 
 By integrating **Vapi** for conversational voice AI, **Twilio** for telephony and messaging, and **Groq** for high-speed LLM processing, this platform streamlines the lead-to-consultation funnel with zero manual intervention.
 
@@ -123,4 +123,4 @@ The system generates a dynamic `client_response.xlsx` containing:
 - **Atomic Writes**: Data is saved to Excel using temporary file buffering to prevent corruption.
 - **Real-time Monitoring**: Interactive logs over SocketIO for live tracking of agent behavior.
 
-Developed with ❤️ for **Anvriksh Cybersecurity**.
+Developed with ❤️.
