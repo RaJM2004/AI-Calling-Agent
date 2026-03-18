@@ -1,0 +1,23 @@
+# Environment Variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
+
+# Data Files (Avoid pushing client data)
+*.xlsx
+*.csv
+# client_response.xlsx
+# updated_client.xlsx
+# client_responses_backup.xlsx
+
+# OS
+.DS_Store
+Thumbs.db

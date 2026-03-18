@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zerokost Calling CRM Agent</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: black;
+        }
+
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            border-radius: 12px;
+            padding: 20px 30px;
+            box-shadow: none;
+            margin-bottom: 25px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: 200px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .total {
+            border-left-color: #4299e1;
+        }
+
+        .total .stat-number {
+            color: #4299e1;
+        }
+
+        .in-progress {
+            border-left-color: #f6ad55;
+        }
+
+        .in-progress .stat-number {
+            color: #f6ad55;
+        }
+
+        .completed {
+            border-left-color: #48bb78;
+        }
+
+        .completed .stat-number {
+            color: #48bb78;
+        }
+
+        .failed {
+            border-left-color: #f56565;
+        }
+
+        .failed .stat-number {
+            color: #f56565;
+        }
+
+        .scheduled {
+            border-left-color: #9f7aea;
+        }
+
+        .scheduled .stat-number {
+            color: #9f7aea;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .left-column,
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #f7fafc;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #4a90e2;
+            background-color: #e9f2fa;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #stopCampaignBtn {
+            background-color: #f56565;
+        }
+
+        #stopCampaignBtn:hover {
+            background-color: #c53030;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 20px 0 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4a90e2;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: #4a90e2;
+            color: white;
+            border-color: #4a90e2;
+        }
+
+        .clients-grid {
+            display: grid;
+            gap: 15px;
+            max-height: 360px;
+            /* Approximate height for 2 cards */
+            overflow-y: auto;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* Internet Explorer 10+ */
+        }
+
+        .clients-grid::-webkit-scrollbar {
+            display: none;
+            /* Safari and Chrome */
+        }
+
+        .client-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid #a0aec0;
+        }
+
+        .client-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .client-card.in-progress {
+            border-left-color: #f6ad55;
+        }
+
+        .client-card.completed {
+            border-left-color: #48bb78;
+        }
+
+        .client-card.failed {
+            border-left-color: #f56565;
+        }
+
+        .client-card.scheduled {
+            border-left-color: #9f7aea;
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .client-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-in-progress {
+            background: #f6ad5533;
+            color: #dd6b20;
+        }
+
+        .status-completed {
+            background: #48bb7833;
+            color: #2f855a;
+        }
+
+        .status-failed {
+            background: #f5656533;
+            color: #c53030;
+        }
+
+        .status-scheduled {
+            background: #9f7aea33;
+            color: #6b46c1;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .client-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #edf2f7;
+        }
+
+        #log-container {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: scroll;
+            font-family: 'Menlo', 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .transcript-content {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 5px solid #48bb78;
+        }
+
+        .notification.error {
+            border-left: 5px solid #f56565;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .clients-grid {
+                max-height: none;
+                /* Remove fixed height on mobile */
+                overflow-y: visible;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body
+    style="background-image: url('static/bg.jpg'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="header-title">
+                <img src="static/logo.png" alt="ZEROKOST Logo" class="logo-img" />
+                <h2>AI Automatic Lead Engine</h2>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-number" id="totalClients">0</div>
+                <div class="stat-label">Total Clients</div>
+            </div>
+            <div class="stat-card in-progress">
+                <div class="stat-number" id="inProgressCalls">0</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-number" id="completedCalls">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card failed">
+                <div class="stat-number" id="failedCalls">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card scheduled">
+                <div class="stat-number" id="scheduledVisits">0</div>
+                <div class="stat-label">Visits Scheduled</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="section-title">Upload Client Data</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">Drag & drop your Excel file here</div>
+                        <div class="upload-subtext">or click to browse files</div>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls" />
+                    </div>
+                    <div class="progress-bar" id="progressBar" style="display: none;">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn" id="startCampaignBtn" disabled>Start Campaign</button>
+                        <button class="btn" id="stopCampaignBtn" disabled>Stop Campaign</button>
+                    </div>
+                </div>
+                <!-- <div class="card">
+                    <h2 class="section-title">Live Logs</h2>
+                    <div id="log-container"></div>
+                </div> -->
+            </div>
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="section-title">Client Status</h2>
+                    <div class="filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="in-progress">In Progress</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="failed">Failed</button>
+                        <button class="filter-btn" data-filter="scheduled">Visits Scheduled</button>
+                    </div>
+                    <div class="clients-grid" id="clientsGrid">
+                        <!-- Client cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for detailed view -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Client Details</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification container -->
+    <div class="notification" id="notification"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        class CallDashboard {
+            constructor() {
+                this.clients = [];
+                this.campaignActive = false;
+                this.currentFilter = 'all';
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadExistingData();
+                this.startPolling();
+                this.setupSocket();
+            }
+
+            bindEvents() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    this.handleFileUpload(e.dataTransfer.files[0]);
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    this.handleFileUpload(e.target.files[0]);
+                });
+
+                document.getElementById('startCampaignBtn').addEventListener('click', () => {
+                    this.startCampaign();
+                });
+                document.getElementById('stopCampaignBtn').addEventListener('click', () => {
+                    this.stopCampaign();
+                });
+
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.setFilter(e.target.dataset.filter);
+                    });
+                });
+
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                document.getElementById('clientModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'clientModal') {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            setupSocket() {
+                const socket = io();
+                const logContainer = document.getElementById('log-container');
+
+                socket.on('connect', () => {
+                    const div = document.createElement('div');
+                    div.innerHTML = '[INFO] Connected to server.';
+                    logContainer.appendChild(div);
+                });
+
+                socket.on('log_message', (msg) => {
+                    const div = document.createElement('div');
+                    div.textContent = msg.data;
+                    logContainer.appendChild(div);
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                });
+            }
+
+            async handleFileUpload(file) {
+                if (!file) return;
+
+                if (!file.name.match(/\.(xlsx|xls)$/)) {
+                    this.showNotification('Please upload an Excel file (.xlsx or .xls)', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    this.showProgress(0);
+
+                    const response = await fetch('/upload-excel', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Upload failed');
+                    }
+
+                    const result = await response.json();
+                    this.showProgress(100);
+
+                    // Assign a default status to new clients and render them
+                    this.clients = (result.clients || []).map(c => ({ ...c, call_status: 'queued' }));
+                    this.updateStats();
+                    this.renderClients();
+
+                    setTimeout(() => {
+                        this.hideProgress();
+                        this.showNotification(`Successfully uploaded ${result.count} clients`, 'success');
+                        document.getElementById('startCampaignBtn').disabled = false;
+                    }, 1000);
+
+                } catch (error) {
+                    this.hideProgress();
+                    this.showNotification('Upload failed: ' + error.message, 'error');
+                }
+            }
+
+            async startCampaign() {
+                try {
+                    const response = await fetch('/start-campaign', {
+                        method: 'POST'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to start campaign');
+                    }
+
+                    this.campaignActive = true;
+                    document.getElementById('startCampaignBtn').disabled = true;
+                    document.getElementById('stopCampaignBtn').disabled = false;
+                    this.showNotification('Campaign started successfully', 'success');
+
+                } catch (error) {
+                    this.showNotification('Failed to start campaign: ' + error.message, 'error');
+                }
+            }
+
+            async stopCampaign() {
+                try {
+                    const response = await fetch('/stop-campaign', {
+                        method: 'POST'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to stop campaign');
+                    }
+
+                    this.campaignActive = false;
+                    document.getElementById('startCampaignBtn').disabled = false;
+                    document.getElementById('stopCampaignBtn').disabled = true;
+                    this.showNotification('Campaign stopped', 'success');
+
+                } catch (error) {
+                    this.showNotification('Failed to stop campaign: ' + error.message, 'error');
+                }
+            }
+
+            async loadExistingData() {
+                try {
+                    const response = await fetch('/get-clients');
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+                    this.clients = data.clients || [];
+                    this.updateStats();
+                    this.renderClients();
+
+                } catch (error) {
+                    console.error('Failed to load existing data:', error);
+                }
+            }
+
+            startPolling() {
+                setInterval(() => {
+                    if (this.campaignActive) {
+                        this.loadExistingData();
+                    }
+                }, 5000);
+            }
+
+            updateStats() {
+                const stats = this.calculateStats();
+                document.getElementById('totalClients').textContent = stats.total;
+                document.getElementById('inProgressCalls').textContent = stats.inProgress;
+                document.getElementById('completedCalls').textContent = stats.completed;
+                document.getElementById('failedCalls').textContent = stats.failed;
+                document.getElementById('scheduledVisits').textContent = stats.scheduled;
+            }
+
+            calculateStats() {
+                const total = this.clients.length;
+                const inProgress = this.clients.filter(c => c.call_status === 'queued' || c.call_status === 'ringing' || c.call_status === 'in-progress').length;
+                const completed = this.clients.filter(c => (c.call_status === 'ended' || c.call_status === 'fulfilled') && c.transcript && c.recording_url).length;
+                const failed = this.clients.filter(c =>
+                    (c.call_status === 'failed' || c.call_status === 'busy' || c.call_status === 'no-answer') ||
+                    (c.call_status === 'ended' && (!c.transcript || !c.recording_url))
+                ).length;
+                const scheduled = this.clients.filter(c => c.visit_time && c.visit_time.trim() !== '').length;
+
+                return { total, inProgress, completed, failed, scheduled };
+            }
+
+            setFilter(filter) {
+                this.currentFilter = filter;
+
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+                this.renderClients();
+            }
+
+            renderClients() {
+                const grid = document.getElementById('clientsGrid');
+                const filteredClients = this.filterClients();
+
+                if (filteredClients.length === 0) {
+                    grid.innerHTML = '<div style="text-align: center; color: #718096; padding: 40px;">No clients to display</div>';
+                    return;
+                }
+
+                grid.innerHTML = filteredClients.map(client => this.createClientCard(client)).join('');
+                this.addClientCardEventListeners();
+            }
+
+            addClientCardEventListeners() {
+                document.querySelectorAll('.view-details-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.viewDetails(e.currentTarget.dataset.clientId);
+                    });
+                });
+                document.querySelectorAll('.view-transcript-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.viewTranscript(e.currentTarget.dataset.clientId);
+                    });
+                });
+                document.querySelectorAll('.play-recording-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.playRecording(e.currentTarget.dataset.recordingUrl);
+                    });
+                });
+            }
+
+            renderUploadedClients(clients) {
+                const section = document.getElementById('uploaded-clients-section');
+                if (!section) return;
+                const grid = document.getElementById('uploadedClientsGrid');
+
+                if (!clients || clients.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
+
+                section.style.display = 'block';
+                grid.innerHTML = clients.map(client => this.createUploadedClientCard(client)).join('');
+            }
+
+            filterClients() {
+                if (this.currentFilter === 'all') {
+                    return this.clients;
+                }
+
+                return this.clients.filter(client => {
+                    switch (this.currentFilter) {
+                        case 'in-progress':
+                            return ['queued', 'ringing', 'in-progress'].includes(client.call_status);
+                        case 'completed':
+                            return (client.call_status === 'ended' || client.call_status === 'fulfilled') && client.transcript && client.recording_url;
+                        case 'failed':
+                            const isFailed = ['failed', 'busy', 'no-answer'].includes(client.call_status) || (client.call_status === 'ended' && (!client.transcript || !client.recording_url));
+                            return isFailed;
+                        case 'scheduled':
+                            return client.visit_time && client.visit_time.trim() !== '';
+                        default:
+                            return true;
+                    }
+                });
+            }
+
+            createClientCard(client) {
+                const status = this.getClientStatus(client);
+                const statusClass = this.getStatusClass(client);
+
+                return `
+                    <div class="client-card ${statusClass}">
+                        <div class="client-header">
+                            <div class="client-name">${client.full_name || 'Unknown'}</div>
+                            <div class="status-badge status-${statusClass}">${status}</div>
+                        </div>
+                        <div class="client-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">${client.phone_number || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Call Status</div>
+                                <div class="detail-value">${client.call_status || 'Not attempted'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Visit Time</div>
+                                <div class="detail-value">${client.visit_time || 'Not scheduled'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">SMS Status</div>
+                                <div class="detail-value">${client.sms_status || 'Not sent'}</div>
+                            </div>
+                        </div>
+                        ${client.checklist ? `
+                        <div class="checklist-section">
+                            <div class="detail-label">Client Checklist</div>
+                            <div class="checklist-content">${client.checklist.replace(/\n/g, '<br>')}</div>
+                        </div>
+                        ` : ''}
+                        <div class="client-actions">
+                            <button class="action-btn view-details-btn" data-client-id="${client.call_id || client.phone_number}">View Details</button>
+                            ${client.transcript ? `<button class="action-btn view-transcript-btn" data-client-id="${client.call_id || client.phone_number}">View Transcript</button>` : ''}
+                            ${client.recording_url ? `<button class="action-btn play-recording-btn" data-recording-url="${client.recording_url}">Play Recording</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            createUploadedClientCard(client) {
+                return `
+                    <div class="client-card">
+                        <div class="client-header">
+                            <div class="client-name">${client['full name'] || 'Unknown'}</div>
+                        </div>
+                        <div class="client-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">${client.phone_number || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Interested?</div>
+                                <div class="detail-value">${client['are_you_interested_in_buying_a_flat_at_kukatpally?'] || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getClientStatus(client) {
+                if (client.visit_time && client.visit_time.trim() !== '') {
+                    return 'Visit Scheduled';
+                }
+
+                if (['failed', 'busy', 'no-answer'].includes(client.call_status) || (client.call_status === 'ended' && (!client.transcript || !client.recording_url))) {
+                    return 'Failed';
+                }
+
+                if (['ended', 'fulfilled'].includes(client.call_status) && client.transcript && client.recording_url) {
+                    return 'Completed';
+                }
+
+                if (['queued', 'ringing', 'in-progress'].includes(client.call_status)) {
+                    return 'In Progress';
+                }
+
+                return 'Pending';
+            }
+
+            getStatusClass(client) {
+                if (client.visit_time && client.visit_time.trim() !== '') {
+                    return 'scheduled';
+                }
+
+                if (['failed', 'busy', 'no-answer'].includes(client.call_status) || (client.call_status === 'ended' && (!client.transcript || !client.recording_url))) {
+                    return 'failed';
+                }
+
+                if (['ended', 'fulfilled'].includes(client.call_status) && client.transcript && client.recording_url) {
+                    return 'completed';
+                }
+
+                if (['queued', 'ringing', 'in-progress'].includes(client.call_status)) {
+                    return 'in-progress';
+                }
+
+                return '';
+            }
+
+            viewDetails(clientId) {
+                const client = this.clients.find(c => c.call_id === clientId || c.phone_number === clientId);
+                if (!client) return;
+
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = `${client.full_name} - Details`;
+
+                modalBody.innerHTML = `
+                    <div class="client-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Full Name</div>
+                            <div class="detail-value">${client.full_name || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone Number</div>
+                            <div class="detail-value">${client.phone_number || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Interest Status</div>
+                            <div class="detail-value">${client.interest_status || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Call ID</div>
+                            <div class="detail-value">${client.call_id || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Call Status</div>
+                            <div class="detail-value">${client.call_status || 'Not attempted'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Visit Time</div>
+                            <div class="detail-value">${client.visit_time || 'Not scheduled'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">SMS Status</div>
+                            <div class="detail-value">${client.sms_status || 'Not sent'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">${client.timestamp || 'N/A'}</div>
+                        </div>
+                    </div>
+                    ${client.transcript ? `
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">Call Transcript</div>
+                            <div class="transcript-content">${client.transcript}</div>
+                        </div>
+                    ` : ''}
+                    ${client.recording_url ? `
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">Call Recording</div>
+                            <audio controls class="audio-player">
+                                <source src="${client.recording_url}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    ` : ''}
+                    ${client.sms_content ? `
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">SMS Content</div>
+                            <div class="detail-value">${client.sms_content}</div>
+                        </div>
+                    ` : ''}
+                    ${client.notes ? `
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <div class="detail-label">Notes</div>
+                            <div class="detail-value">${client.notes}</div>
+                        </div>
+                    ` : ''}
+                `;
+
+                this.showModal();
+            }
+
+            viewTranscript(clientId) {
+                const client = this.clients.find(c => c.call_id === clientId || c.phone_number === clientId);
+                if (!client || !client.transcript) return;
+
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = `${client.full_name} - Call Transcript`;
+
+                modalBody.innerHTML = `
+                    <div class="transcript-content" style="max-height: 400px;">${client.transcript}</div>
+                    ${client.recording_url ? `
+                        <div style="margin-top: 20px;">
+                            <div class="detail-label">Call Recording</div>
+                            <audio controls class="audio-player">
+                                <source src="${client.recording_url}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    ` : ''}
+                `;
+
+                this.showModal();
+            }
+
+            playRecording(recordingUrl) {
+                if (!recordingUrl) return;
+
+                const modalTitle = document.getElementById('modalTitle');
+                const modalBody = document.getElementById('modalBody');
+
+                modalTitle.textContent = 'Call Recording';
+
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <audio controls class="audio-player" autoplay>
+                            <source src="${recordingUrl}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <div style="margin-top: 20px;">
+                            <a href="${recordingUrl}" download class="btn">Download Recording</a>
+                        </div>
+                    </div>
+                `;
+
+                this.showModal();
+            }
+
+            showModal() {
+                document.getElementById('clientModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeModal() {
+                document.getElementById('clientModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            showProgress(percentage) {
+                const progressBar = document.getElementById('progressBar');
+                const progressFill = document.getElementById('progressFill');
+
+                progressBar.style.display = 'block';
+                progressFill.style.width = percentage + '%';
+            }
+
+            hideProgress() {
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.display = 'none';
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                if (!notification) return;
+
+                notification.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 5px;">
+                        ${type === 'success' ? '✅' : '❌'} ${type === 'success' ? 'Success' : 'Error'}
+                    </div>
+                    <div>${message}</div>
+                `;
+
+                notification.className = `notification ${type} show`;
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        window.dashboard = new CallDashboard();
+    </script>
+</body>
+
+</html>

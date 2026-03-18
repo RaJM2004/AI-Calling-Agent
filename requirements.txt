@@ -1,0 +1,10 @@
+flask
+werkzeug
+openpyxl
+pandas
+requests
+twilio
+python-dotenv
+threading
+Flask-SocketIO
+google-generativeai
