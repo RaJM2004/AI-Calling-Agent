@@ -74,7 +74,7 @@ def process_transcript_with_groq(transcript):
            - Key decisions from the meeting
            - Next steps agreed upon
            - Any immediate action items
-           - At the bottom, add company info: "For more details: https://anvriksh.com/"
+           - At the bottom, add company info: "For more details: https://zerokost.com/"
         
         Transcript:
         ---
@@ -774,7 +774,7 @@ def run_campaign():
                 })
             else:
                 # Fallback SMS for cybersecurity
-                sms_status, sms_content = send_sms(phone, f"Hi {name}, thank you for the cybersecurity consultation. We've documented your security concerns and will follow up with detailed recommendations.\n\nFor more details: https://anvriksh.com/")
+                sms_status, sms_content = send_sms(phone, f"Hi {name}, thank you for the cybersecurity consultation. We've documented your security concerns and will follow up with detailed recommendations.\n\nFor more details: https://zerokost.com/")
                 response_data.update({
                     'sms_status': sms_status,
                     'sms_content': sms_content,
